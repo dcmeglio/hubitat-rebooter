@@ -24,7 +24,13 @@ def updated() {
 
 def initialize() {
 	def time = timeToday(rebootTime)
-    schedule("00 ${time.minutes} ${time.hours} ? * *", scheduledReboot)
+	def days = ""
+	for (def i = 0; i < rebootDays.size(); i++) {
+		days += rebootDays[i].substring(0,3)
+		days += ","
+	}
+	days = days.substring(0,days.size()-1)
+    schedule("00 ${time.minutes} ${time.hours} ? * ${days}", scheduledReboot)
 }
 
 def uninstalled() {
@@ -42,6 +48,7 @@ def prefMain() {
 				input("rebootPassword", "password", title: "Hub Security password", required: true)
 			}
 			input("rebootTime", "time", title: "Time of day to reboot", required: true)
+			input("rebootDays", "enum", title: "Which days should the hub be rebooted?", required: true, multiple: true, options:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"])
 		}
 	}
 }
