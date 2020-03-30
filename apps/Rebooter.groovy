@@ -1,8 +1,21 @@
+/**
+ *
+ *  Rebooter
+ *
+ *  Copyright 2019-2020 Dominick Meglio
+ *
+ *	If you find this useful, donations are always appreciated 
+ *	https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7LBRPJRLJSDDN&source=url
+ *
+ * Revision History
+ * v 2020.03.30 - Added an option to restart the Hubitat process instead of rebooting the hub
+ */
+ 
 definition(
     name: "Rebooter",
     namespace: "dcm.rebooter",
     author: "Dominick Meglio",
-    description: "Reboot your hub on a schedule",
+    description: "Restart your hub on a schedule",
     category: "My Apps",
     iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
     iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
@@ -49,6 +62,7 @@ def prefMain() {
 			}
 			input("rebootTime", "time", title: "Time of day to reboot", required: true)
 			input("rebootDays", "enum", title: "Which days should the hub be rebooted?", required: true, multiple: true, options:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"])
+			input("restartInsteadOfReboot", "bool", title: "Restart the Hubitat process instead of rebooting the hub", defaultValue: true)
 		}
 	}
 }
@@ -79,11 +93,14 @@ def scheduledReboot()
             cookie = resp?.headers?.'Set-Cookie'?.split(';')?.getAt(0)
         }
 	}
-		
+	
+	def rebootPath = "/hub/reboot"
+	if (restartInsteadOfReboot)
+		rebootPath = "/hub/restart"
 	httpPost(
 		[
 			uri: "http://127.0.0.1:8080",
-			path: "/hub/reboot",
+			path: rebootPath,
 			headers:
 			[
 				"Cookie": cookie
