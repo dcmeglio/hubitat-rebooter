@@ -1,0 +1,17 @@
+{
+	"packageName": "Hub Rebooter",
+	"minimumHEVersion": "2.1.9",
+	"author": "Dominick Meglio",
+	"version": "1.0",
+	"dateReleased": "2020-04-04",
+	"licenseFile": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+	"apps" : [
+		{
+			"id" : "d7b86d78-087c-4ec9-b278-dd4f376193dc",
+			"name": "Rebooter",
+			"location": "https://raw.githubusercontent.com/dcmeglio/hubitat-rebooter/master/apps/Rebooter.groovy",
+			"required": true,
+			"oauth": true
+		}
+	]
+}
