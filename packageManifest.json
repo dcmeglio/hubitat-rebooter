@@ -10,8 +10,7 @@
 			"id" : "d7b86d78-087c-4ec9-b278-dd4f376193dc",
 			"name": "Rebooter",
 			"location": "https://raw.githubusercontent.com/dcmeglio/hubitat-rebooter/master/apps/Rebooter.groovy",
-			"required": true,
-			"oauth": true
+			"required": true
 		}
 	]
 }
