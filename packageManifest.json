@@ -2,8 +2,11 @@
 	"packageName": "Hub Rebooter",
 	"minimumHEVersion": "2.1.9",
 	"author": "Dominick Meglio",
-	"version": "1.0",
-	"dateReleased": "2020-04-04",
+	"version": "1.0.1",
+	"documentationLink": "https://github.com/dcmeglio/hubitat-rebooter/blob/master/README.md",
+	"communityLink": "https://community.hubitat.com/t/release-hub-rebooter-app/30310",
+	"releaseNotes": "Added documentation and community links",
+	"dateReleased": "2020-04-21",
 	"apps" : [
 		{
 			"id" : "d7b86d78-087c-4ec9-b278-dd4f376193dc",
