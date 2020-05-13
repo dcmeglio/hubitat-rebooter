@@ -33,46 +33,66 @@ def installed() {
 
 def updated() {
 	unschedule()
+	unsubscribe()
     initialize()
 }
 
 def initialize() {
-	def time = timeToday(rebootTime)
-	def days = ""
-	for (def i = 0; i < rebootDays.size(); i++) {
-		days += rebootDays[i].substring(0,3)
-		days += ","
+	if (rebootType == "Time" || rebootType == null) {
+		def time = timeToday(rebootTime)
+		def days = ""
+		for (def i = 0; i < rebootDays.size(); i++) {
+			days += rebootDays[i].substring(0,3)
+			days += ","
+		}
+		days = days.substring(0,days.size()-1)
+		schedule("00 ${time.minutes} ${time.hours} ? * ${days}", executeReboot)
 	}
-	days = days.substring(0,days.size()-1)
-    schedule("00 ${time.minutes} ${time.hours} ? * ${days}", scheduledReboot)
+	else {
+		subscribe(rebootButton, "pushed.1", buttonPushed)
+	}
+}
+
+def buttonPushed(evt) {
+	executeReboot()
 }
 
 def uninstalled() {
 	logDebug "uninstalling app"
 	unschedule()
+	unsubscribe()
 }
 
 def prefMain() {
     return dynamicPage(name: "prefMain", title: "Reboot Configuration", install: true, uninstall: true) {
 		section("") {
-			input("rebootSecurity", "bool", title: "Is Hub Security enabled?", submitOnChange: true)
+			input "rebootSecurity", "bool", title: "Is Hub Security enabled?", submitOnChange: true
 			if (rebootSecurity)
 			{
-				input("rebootUsername", "string", title: "Hub Security username", required: true)
-				input("rebootPassword", "password", title: "Hub Security password", required: true)
+				input "rebootUsername", "string", title: "Hub Security username", required: true
+				input "rebootPassword", "password", title: "Hub Security password", required: true
 			}
-			input("rebootTime", "time", title: "Time of day to reboot", required: true)
-			input("rebootDays", "enum", title: "Which days should the hub be rebooted?", required: true, multiple: true, options:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"])
-			input("restartInsteadOfReboot", "bool", title: "Restart the Hubitat process instead of rebooting the hub", defaultValue: true)
+			input "rebootType", "enum", title: "What would you like to use to trigger a reboot?", options: ["Time","Button"], defaultValue: "Time", submitOnChange: true
+			if (rebootType == "Time" || rebootType == null) {
+				input "rebootTime", "time", title: "Time of day to reboot", required: true
+				input "rebootDays", "enum", title: "Which days should the hub be rebooted?", required: true, multiple: true, options:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+			}
+			else if (rebootType == "Button") {
+				input "rebootButton", "capability.pushableButton", title: "Button that, when pressed, will trigger a reboot/restart", required: true
+			}
+			input "restartInsteadOfReboot", "bool", title: "Restart the Hubitat process instead of rebooting the hub", defaultValue: true
 		}
 		displayFooter()
 	}
 }
 
-def scheduledReboot() 
+def executeReboot() 
 {
     def cookie = ""
-	log.info "Rebooting hub"
+	if (restartInsteadOfReboot)
+		log.info "Restarting hub"
+	else
+		log.info "Rebooting hub"
     if (rebootSecurity)
     {
 		httpPost(
