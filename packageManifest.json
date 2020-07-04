@@ -13,7 +13,8 @@
 			"name": "Rebooter",
 			"namespace": "dcm.rebooter",
 			"location": "https://raw.githubusercontent.com/dcmeglio/hubitat-rebooter/master/apps/Rebooter.groovy",
-			"required": true
+			"required": true,
+			"primary": true
 		}
 	]
 }
